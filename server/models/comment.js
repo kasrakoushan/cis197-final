@@ -1,6 +1,5 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
-const bcrypt = require('bcrypt');
 
 // TODO: User schema should have the following.
 // A `username` of type string  that is unique and required
@@ -10,35 +9,38 @@ const bcrypt = require('bcrypt');
 // an `image` of type  string
 // an array `following` containing objects of type Schema.ObjectId
 // an array of `followers containing objects of  type Schema.ObjectId
-let userSchema = new Schema({
+let commentSchema = new Schema({
   // STUB
-  username: { type: String, required: true, unique: true },
-  name: { type: String },
-  password: { type: String, required: true },
+  course: {
+    type: Schema.ObjectId,
+    ref: 'Course',
+  },
+  content: { type: String },
+  upVotes: Number,
+  downVotes: Number,
   // ENDSTUB
 });
 
 
-userSchema.statics.addUser = function (username, password, name) {
+commentSchema.statics.addComment = function (courseId, content) {
   // TODO: create a new user object with username, password, species, image, and name equal to  the
   // specified arguments. Once  this object is created, use bcrypt.hash to hash the
   // newUser.password  and set  the newUser's password equal to the hash. Finally call save
   // Must return  a  promise (ie your bcrypt hash call must look something like
   // bcrypt.hash(...).then(function( hash ) { ... return newUser.save() }
   // STUB
-  let newUser = new this({
-    username: username,
-    password: password,
-    name: name,
+  let newComment = new this({
+    course: courseId,
+    content: content,
+    upVotes: 0,
+    downVotes: 0,
   });
-  return bcrypt.hash(newUser.password, 1).then((hash) => {
-    newUser.password = hash;
-    return newUser.save();
-  });
+  return newComment.save()
+    .then(saved => saved);
   // ENDSTUB
 };
 
-userSchema.statics.check = function (username, password) {
+commentSchema.statics.check = function (username, password) {
   // determines if a given password for a username is valid  or not.
   // find a user with the username equivalent to the username passed in.
   // if  there is no  user then throw a new  Error('No User') else  return the result
@@ -55,4 +57,22 @@ userSchema.statics.check = function (username, password) {
   // ENDSTUB
 };
 
-module.exports = mongoose.model('User', userSchema);
+commentSchema.statics.upVote = function(commentId) {
+  return this.findOne({ _id: commentId })
+    .then((comment) => {
+      comment.upVotes += 1;
+      return comment.save();
+    })
+    .then(saved => saved);
+};
+
+commentSchema.statics.downVote = function(commentId) {
+  return this.findOne({ _id: commentId })
+    .then((comment) => {
+      comment.downVotes += 1;
+      return comment.save();
+    })
+    .then(saved => saved);
+};
+
+module.exports = mongoose.model('Comment', commentSchema);
