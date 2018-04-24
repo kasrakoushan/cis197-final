@@ -40,23 +40,6 @@ commentSchema.statics.addComment = function (courseId, content) {
   // ENDSTUB
 };
 
-commentSchema.statics.check = function (username, password) {
-  // determines if a given password for a username is valid  or not.
-  // find a user with the username equivalent to the username passed in.
-  // if  there is no  user then throw a new  Error('No User') else  return the result
-  // of bcrypt.compare for the password and the user's password
-  // STUB
-  return this.findOne({ username: username })
-    .then((user) => {
-      if (!user) {
-        throw new Error('No User');
-      } else {
-        return bcrypt.compare(password, user.password);
-      }
-    });
-  // ENDSTUB
-};
-
 commentSchema.statics.upVote = function(commentId) {
   return this.findOne({ _id: commentId })
     .then((comment) => {

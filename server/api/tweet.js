@@ -1,6 +1,6 @@
 const router = require('express').Router();
 const isAuthenticated = require('../middlewares/isAuthenticated');
-const Tweet = require('../models/tweet');
+// const Tweet = require('../models/tweet');
 
 module.exports = function (app) {
   // TODO: Check to see if user is authenticated
