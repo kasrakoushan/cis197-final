@@ -12,8 +12,9 @@ const tweetListReducer = (state = {
 }, action) => {
   switch (action.type) {
   case LOADTWEETS_FUL:
+    console.log(action.tweets);
     return {
-      ids: action.tweets.map(t => t.tweetId),
+      ids: action.tweets.map(t => t._id),
     };
   default:
     return state;

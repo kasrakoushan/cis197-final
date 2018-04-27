@@ -12,6 +12,7 @@ import Flashes from './Flashes';
 import NewsFeed from './NewsFeed';
 import Profile from './Profile';
 import EditProfile from './EditProfile';
+import CreateTweetBox from './CreateTweetBox';
 
 class App extends Component {
   constructor(props) {
@@ -48,6 +49,7 @@ class App extends Component {
             <Route path='/signx' component={SignX} />
             <Route path='/logout' component={AuthHOC(Logout)} />
             <Route path='/feed' component={AuthHOC(NewsFeed)} />
+            <Route path='/new-course' component={AuthHOC(CreateTweetBox)} />
             <Route path='/profile/:id?' component={AuthHOC(Profile)} />
             <Route path='/edit-profile' component={AuthHOC(EditProfile)} />
             <Route component={SignX} />

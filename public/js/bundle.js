@@ -458,10 +458,9 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.DISCOVERBIRDS_REJ = exports.DISCOVERBIRDS_FUL = exports.CREATETWEET_REJ = exports.CREATETWEET_FUL = exports.LOADTWEETS_FUL = exports.LOADTWEETS_REJ = exports.FAVORITE_FUL = exports.FAVORITE_REJ = undefined;
-exports.loadTweetsForProfile = loadTweetsForProfile;
-exports.loadTweets = loadTweets;
+exports.loadCourses = loadCourses;
 exports.favoriteTweet = favoriteTweet;
-exports.createNewTweet = createNewTweet;
+exports.createNewCourse = createNewCourse;
 exports.getDiscoverBirds = getDiscoverBirds;
 
 var _authenticatedRequest = __webpack_require__(57);
@@ -482,8 +481,8 @@ var CREATETWEET_REJ = exports.CREATETWEET_REJ = 'CREATETWEET_REJ';
 var DISCOVERBIRDS_FUL = exports.DISCOVERBIRDS_FUL = 'DISCOVERBIRDS_FUL';
 var DISCOVERBIRDS_REJ = exports.DISCOVERBIRDS_REJ = 'DISCOVERBIRDS_REJ';
 
-// this is  a helper method you can use to getTweets from a given URL.
-function getTweets(url) {
+// this is  a helper method you can use to getCourses from a given URL.
+function getCourses(url) {
   return function (dispatch) {
     (0, _authenticatedRequest2.default)('GET', url).then(function (res) {
       return res.json();
@@ -501,22 +500,10 @@ function getTweets(url) {
   };
 }
 
-function loadTweetsForProfile(userId) {
-  // TODO: will send  a request to /api/profile/userId/tweets if a userId is specified
-  // else it will just send a request to /api/profile/tweets
-  // then should *get the Tweets*  (hint hint) from that url
-  // async action creator
-  if (userId) {
-    return getTweets('/api/profile/' + userId + '/tweets');
-  } else {
-    return getTweets('/api/profile/tweets');
-  }
-}
-
-function loadTweets() {
+function loadCourses() {
   // TODO: loads tweets from /api/newsfeed ie *get the tweets* from that url
   // async action creator
-  return getTweets('/api/newsfeed');
+  return getCourses('/api/course-catalog');
 }
 
 function favoriteTweet(tweetId) {
@@ -543,20 +530,20 @@ function favoriteTweet(tweetId) {
   };
 }
 
-function createNewTweet(tweetContent) {
+function createNewCourse(courseCode, description, professor) {
   // TODO: authenticated request # 2
   // we send a POST request that is authenticated to /api/tweet
   // if the request is successful we send  a CREATETWEET_FUL action with message and some data
   // corresponding  to the new tweet (we get it from the response (determined by express))
   // if there is  an error, dispatch a CREATETWEET_REJ error
   return function (dispatch) {
-    (0, _authenticatedRequest2.default)('POST', '/api/tweet', { content: tweetContent }).then(function (res) {
+    (0, _authenticatedRequest2.default)('POST', '/api/course', { courseCode: courseCode, description: description, professor: professor }).then(function (res) {
       return res.json();
     }).then(function (resp) {
       var data = resp.data;
       dispatch({
         type: CREATETWEET_FUL,
-        message: 'You have created a tweet',
+        message: 'You have created a course',
         data: data
       });
     }).catch(function (error) {
@@ -2144,131 +2131,7 @@ function registerUser(info) {
 }
 
 /***/ }),
-/* 30 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.FAVUNFAV_REJ = exports.FAVUNFAV_FUL = exports.GETPROFILE_REJ = exports.GETPROFILE_FUL = exports.UPDATEPROFILE_REJ = exports.UPDATEPROFILE_FUL = undefined;
-exports.updateProfile = updateProfile;
-exports.getUser = getUser;
-exports.favUnfav = favUnfav;
-
-var _authenticatedRequest = __webpack_require__(57);
-
-var _authenticatedRequest2 = _interopRequireDefault(_authenticatedRequest);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var UPDATEPROFILE_FUL = exports.UPDATEPROFILE_FUL = 'UPDATEPROFILE_FUL';
-var UPDATEPROFILE_REJ = exports.UPDATEPROFILE_REJ = 'UPDATEPROFILE_REJ';
-
-var GETPROFILE_FUL = exports.GETPROFILE_FUL = 'GETPROFILE_FUL';
-var GETPROFILE_REJ = exports.GETPROFILE_REJ = 'GETPROFILE_REJ';
-
-var FAVUNFAV_FUL = exports.FAVUNFAV_FUL = 'FAVUNFAV_FUL';
-var FAVUNFAV_REJ = exports.FAVUNFAV_REJ = 'FAVUNFAV_REJ';
-
-function updateProfile(data) {
-  // TODO: will send a POST  request  to /api/profile/edit with the data passed into it
-  // this request will need to be an authenticated request (ref the import at the
-  // top of the file
-  // Note that this action creator is asynchronous. Look back at lecture to see
-  // how you should  structure this function in light of that fact
-  // From the response, grab the name, species, and image
-  // dispatch an UPDATEPROFILE_FUL action with additional properties `profile`
-  // and `message: 'You have updated your profile and can now check it'` In the
-  // `profile` preoperty of the action, set its value equal to an object with
-  // properties name, species, and image
-  // If the request fails/errors, send an action of type UPDATEPROFILE_REJ and
-  // add an additional property `error` containing the error itself
-  return function (dispatch) {
-    (0, _authenticatedRequest2.default)('POST', '/api/profile/edit', data).then(function (res) {
-      return res.json();
-    }).then(function (resp) {
-      var data = resp.data;
-      dispatch({
-        type: UPDATEPROFILE_FUL,
-        message: 'You have updated your profile and can now check it',
-        profile: {
-          name: data.name,
-          species: data.species,
-          image: data.image
-        }
-      });
-    }).catch(function (error) {
-      dispatch({
-        type: UPDATEPROFILE_REJ,
-        error: error
-      });
-    });
-  };
-}
-
-function getUser(id) {
-  // TODO: async action creator again
-  // make an authenticated request to the route  that allows us to get profile
-  // information. (you can ref your express files for this to see what type  of
-  // request it is and the url pattern (note that you need to handle the case where
-  // id is empty/undefined and adjust the url accordingly
-  // When the request is successful, dispatch a GETPROFILE_FUL action with additional
-  // property `profile` containing  the result of the request relevant (ref your express
-  // method for what is returned)
-  // if there's  an error, dispatch a GETPROFILE_REJ action with an addition property `error`
-  // equal to the error
-
-  return function (dispatch) {
-    (0, _authenticatedRequest2.default)('GET', id ? '/api/profile/' + id + '/info' : '/api/profile/info').then(function (res) {
-      return res.json();
-    }).then(function (resp) {
-      var user = resp.data;
-      dispatch({
-        type: GETPROFILE_FUL,
-        profile: user
-      });
-    }).catch(function (error) {
-      dispatch({
-        type: GETPROFILE_REJ,
-        error: error
-      });
-    });
-  };
-}
-
-function favUnfav(id) {
-  // TODO: async action creatora gain
-  // make an authenticated request to t he route that allows us to follow
-  // a user. when this returns, dispatch  a new FAVUNFAV_FUL action with properties
-  // profile equal to the respnose data and also  a message property that says
-  // 'You are now ' + following or unfollowing + ' this person'
-  // else if there is an  error
-  // dispatch an action FAVUNFAV_REJ  with an error equal  to the error of the
-  // request
-
-  return function (dispatch) {
-    (0, _authenticatedRequest2.default)('POST', '/api/profile/' + id + '/follow').then(function (res) {
-      return res.json();
-    }).then(function (resp) {
-      var data = resp.data;
-      dispatch({
-        type: FAVUNFAV_FUL,
-        profile: data,
-        message: 'You are now ' + (data.isFollowing ? '' : 'un') + 'following this person'
-      });
-    }).catch(function (error) {
-      dispatch({
-        type: FAVUNFAV_REJ,
-        error: error
-      });
-    });
-  };
-}
-
-/***/ }),
+/* 30 */,
 /* 31 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -2319,7 +2182,7 @@ var TweetList = function (_Component) {
       // without doing additional imports...
       this.setState({
         load: setInterval(function () {
-          return _this2.props.loadTweets();
+          return _this2.props.loadCourses();
         }, 2500)
       });
     }
@@ -2341,6 +2204,7 @@ var TweetList = function (_Component) {
       // <div class="col-md-12">
       //  ...bunch o tweets
       // </div>
+      console.log(this.props.ids);
       var tweetComponents = this.props.ids.map(function (id) {
         return _react2.default.createElement(_Tweet2.default, { tweetId: id, key: id });
       });
@@ -27281,11 +27145,9 @@ var _discoverReducer = __webpack_require__(120);
 
 var _discoverReducer2 = _interopRequireDefault(_discoverReducer);
 
-var _profileReducer = __webpack_require__(121);
-
-var _profileReducer2 = _interopRequireDefault(_profileReducer);
-
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+// import profileReducer from './profileReducer.js';
 
 // TODO: you should somehow * combine reducers * hint hint
 // so that the reducer looks like
@@ -27299,16 +27161,14 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 // }
 // store this reducer in a variable 'tweetApp'
 
-// TODO: determine appropriate imports
 var tweetApp = (0, _redux.combineReducers)({
   authReducer: _authReducer2.default,
   messageReducer: _messageReducer2.default,
   tweetList: _tweetListReducer2.default,
   tweet: _tweetReducer2.default,
-  discoverReducer: _discoverReducer2.default,
-  profileReducer: _profileReducer2.default
+  discoverReducer: _discoverReducer2.default
 });
-
+// TODO: determine appropriate imports
 exports.default = tweetApp;
 
 /***/ }),
@@ -27453,18 +27313,18 @@ var tweetReducer = function tweetReducer() {
       {
         return action.tweets.reduce(function (accum, cur) {
           var newObj = {};
-          newObj[cur.tweetId] = cur;
+          newObj[cur._id] = cur;
           return Object.assign(accum, newObj);
         }, {});
       }
     case _tweetActions.CREATETWEET_FUL:
       {
-        newState[action.data.tweetId] = action.data;
+        newState[action.data._id] = action.data;
         return Object.assign(newState, state);
       }
     case _tweetActions.FAVORITE_FUL:
       {
-        newState[action.data.tweetId] = action.data;
+        newState[action.data._id] = action.data;
         return Object.assign(newState, state);
       }
     default:
@@ -27500,9 +27360,10 @@ var tweetListReducer = function tweetListReducer() {
 
   switch (action.type) {
     case _tweetActions.LOADTWEETS_FUL:
+      console.log(action.tweets);
       return {
         ids: action.tweets.map(function (t) {
-          return t.tweetId;
+          return t._id;
         })
       };
     default:
@@ -27549,57 +27410,7 @@ var discoverReducer = function discoverReducer() {
 exports.default = discoverReducer;
 
 /***/ }),
-/* 121 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; // providing this for  you bc im nice  :)
-
-
-var _profileActions = __webpack_require__(30);
-
-var initialState = {
-  profile: {
-    name: '',
-    species: '',
-    photo: '',
-    followers: [],
-    following: [],
-    isFollowing: false
-  }
-};
-
-var profileReducer = function profileReducer() {
-  var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : initialState;
-  var action = arguments[1];
-
-  switch (action.type) {
-    case _profileActions.UPDATEPROFILE_FUL:
-      return _extends({}, state, {
-        profile: Object.assign({}, state.profile, action.profile)
-      });
-    case _profileActions.GETPROFILE_FUL:
-      return _extends({}, state, {
-        profile: action.profile
-      });
-    case _profileActions.FAVUNFAV_FUL:
-      return _extends({}, state, {
-        profile: Object.assign({}, state.profile, action.profile)
-      });
-    default:
-      return state;
-  }
-};
-
-exports.default = profileReducer;
-
-/***/ }),
+/* 121 */,
 /* 122 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -27687,6 +27498,10 @@ var _EditProfile = __webpack_require__(136);
 
 var _EditProfile2 = _interopRequireDefault(_EditProfile);
 
+var _CreateTweetBox = __webpack_require__(135);
+
+var _CreateTweetBox2 = _interopRequireDefault(_CreateTweetBox);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -27743,6 +27558,7 @@ var App = function (_Component) {
             _react2.default.createElement(_reactRouterDom.Route, { path: '/signx', component: _SignX2.default }),
             _react2.default.createElement(_reactRouterDom.Route, { path: '/logout', component: (0, _AuthHOC2.default)(_Logout2.default) }),
             _react2.default.createElement(_reactRouterDom.Route, { path: '/feed', component: (0, _AuthHOC2.default)(_NewsFeed2.default) }),
+            _react2.default.createElement(_reactRouterDom.Route, { path: '/new-course', component: (0, _AuthHOC2.default)(_CreateTweetBox2.default) }),
             _react2.default.createElement(_reactRouterDom.Route, { path: '/profile/:id?', component: (0, _AuthHOC2.default)(_Profile2.default) }),
             _react2.default.createElement(_reactRouterDom.Route, { path: '/edit-profile', component: (0, _AuthHOC2.default)(_EditProfile2.default) }),
             _react2.default.createElement(_reactRouterDom.Route, { component: _SignX2.default })
@@ -28261,6 +28077,15 @@ var NavBar = function (_Component) {
               { className: 'nav-link', to: '/logout' },
               'Logout'
             )
+          ),
+          _react2.default.createElement(
+            'li',
+            { className: 'nav-item' },
+            _react2.default.createElement(
+              _reactRouterDom.Link,
+              { className: 'nav-link', to: '/new-course' },
+              'New Course'
+            )
           )
         ) : _react2.default.createElement(
           'ul',
@@ -28438,8 +28263,8 @@ var NewsFeed = function (_Component) {
       // note that it needs a property getDisocverBirds that
       // is a function which dispatches the getDiscoverBirds action
       // also needs to mount TweetList with a property
-      // loadTweets that is a function which dispatches the
-      // loadTweets action.
+      // loadCourses that is a function which dispatches the
+      // loadCourses action.
       // ultimate html structure will look like
       // <div class="container">
       //  <h2>News Feed</h2>
@@ -28466,13 +28291,8 @@ var NewsFeed = function (_Component) {
           { className: 'row' },
           _react2.default.createElement(
             'div',
-            { className: 'col-md-4' },
-            _react2.default.createElement(_DiscoverBirds2.default, { getDiscoverBirds: this.props.getDiscoverBirds })
-          ),
-          _react2.default.createElement(
-            'div',
             { className: 'col-md-8' },
-            _react2.default.createElement(_TweetList2.default, { loadTweets: this.props.loadTweets })
+            _react2.default.createElement(_TweetList2.default, { loadCourses: this.props.loadCourses })
           )
         )
       );
@@ -28487,8 +28307,8 @@ var NewsFeed = function (_Component) {
 
 var mapDispatchToProps = function mapDispatchToProps(dispatch) {
   return {
-    loadTweets: function loadTweets() {
-      return dispatch((0, _tweetActions.loadTweets)());
+    loadCourses: function loadCourses() {
+      return dispatch((0, _tweetActions.loadCourses)());
     },
     getDiscoverBirds: function getDiscoverBirds() {
       return dispatch((0, _tweetActions.getDiscoverBirds)());
@@ -28541,16 +28361,10 @@ var Tweet = function (_Component) {
   _createClass(Tweet, [{
     key: 'render',
     value: function render() {
-      var _this2 = this;
-
       var _props = this.props,
-          tweetId = _props.tweetId,
-          authorName = _props.authorName,
-          authorId = _props.authorId,
-          authorPic = _props.authorPic,
-          content = _props.content,
-          isFavorited = _props.isFavorited,
-          numFavorites = _props.numFavorites;
+          courseCode = _props.courseCode,
+          description = _props.description,
+          professor = _props.professor;
 
       var cardStyles = {
         marginBottom: '40px',
@@ -28559,52 +28373,26 @@ var Tweet = function (_Component) {
       var favoriteStyles = {
         color: '#FFF'
       };
-      var imgStyles = {
-        borderRadius: '50%',
-        width: '50px',
-        height: '50px',
-        marginRight: '10px'
-      };
-      var authorUrl = '/profile/' + authorId;
-      var image = authorPic ? authorPic : 'https://files.allaboutbirds.net/wp-content/uploads/2015/06/prow-featured.jpg';
-      var favoriteText = (isFavorited ? 'Unfavorite' : 'Favorite') + ' tweet';
+      // let authorUrl = `/profile/${authorId}`;
+      var courseUrl = '/feed';
       return _react2.default.createElement(
         'div',
         { className: 'card', style: cardStyles },
         _react2.default.createElement(
           'h5',
           { className: 'card-title' },
-          _react2.default.createElement('img', { src: image, style: imgStyles }),
           _react2.default.createElement(
             _reactRouterDom.Link,
-            { to: authorUrl },
+            { to: courseUrl },
             ' ',
-            authorName,
+            courseCode,
             ' '
           )
         ),
         _react2.default.createElement(
           'p',
           null,
-          content
-        ),
-        _react2.default.createElement(
-          'a',
-          {
-            onClick: function onClick() {
-              return _this2.props.favoriteTweet(tweetId);
-            },
-            style: favoriteStyles,
-            className: 'btn btn-primary'
-          },
-          favoriteText
-        ),
-        _react2.default.createElement(
-          'span',
-          null,
-          'This tweet has been favorited ',
-          numFavorites,
-          ' time(s)'
+          description
         )
       );
     }
@@ -28612,17 +28400,6 @@ var Tweet = function (_Component) {
 
   return Tweet;
 }(_react.Component);
-
-var mapDispatchToProps = function mapDispatchToProps(dispatch) {
-  return {
-    favoriteTweet: function favoriteTweet(tweetId) {
-      return dispatch((0, _tweetActions.favoriteTweet)(tweetId));
-    }
-  };
-};
-// TODO: set up a prop `favoriteTweet` dispatchings the favoriteTweet acition with the id
-// of the tweet (as an argument to this function
-
 
 var mapStateToProps = function mapStateToProps(state, ownProps) {
   return state.tweet[ownProps.tweetId];
@@ -28632,7 +28409,7 @@ var mapStateToProps = function mapStateToProps(state, ownProps) {
 // this component
 
 
-exports.default = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(Tweet);
+exports.default = (0, _reactRedux.connect)(mapStateToProps)(Tweet);
 
 /***/ }),
 /* 132 */
@@ -28757,8 +28534,6 @@ var _CreateTweetBox2 = _interopRequireDefault(_CreateTweetBox);
 
 var _tweetActions = __webpack_require__(6);
 
-var _profileActions = __webpack_require__(30);
-
 var _reactRedux = __webpack_require__(4);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
@@ -28768,6 +28543,8 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+// import { getUser, favUnfav } from '../actions/profileActions';
+
 
 var Profile = function (_Component) {
   _inherits(Profile, _Component);
@@ -28854,12 +28631,32 @@ var mapDispatchToProps = function mapDispatchToProps(dispatch) {
     loadTweetsForProfile: function loadTweetsForProfile(userId) {
       return dispatch((0, _tweetActions.loadTweetsForProfile)(userId));
     },
-    getUser: function getUser(userId) {
-      return dispatch((0, _profileActions.getUser)(userId));
-    },
-    favUnfav: function favUnfav(userId) {
-      return dispatch((0, _profileActions.favUnfav)(userId));
-    }
+    getUser: function (_getUser) {
+      function getUser(_x) {
+        return _getUser.apply(this, arguments);
+      }
+
+      getUser.toString = function () {
+        return _getUser.toString();
+      };
+
+      return getUser;
+    }(function (userId) {
+      return dispatch(getUser(userId));
+    }),
+    favUnfav: function (_favUnfav) {
+      function favUnfav(_x2) {
+        return _favUnfav.apply(this, arguments);
+      }
+
+      favUnfav.toString = function () {
+        return _favUnfav.toString();
+      };
+
+      return favUnfav;
+    }(function (userId) {
+      return dispatch(favUnfav(userId));
+    })
   };
 };
 // optionally use this to handle assigning dispatch actions to props
@@ -29003,17 +28800,19 @@ var CreateTweetBox = function (_Component) {
 
     var _this = _possibleConstructorReturn(this, (CreateTweetBox.__proto__ || Object.getPrototypeOf(CreateTweetBox)).call(this, props));
 
-    _this.submitTweet = _this.submitTweet.bind(_this);
+    _this.submitCourse = _this.submitCourse.bind(_this);
     return _this;
   }
 
   _createClass(CreateTweetBox, [{
-    key: 'submitTweet',
-    value: function submitTweet(e) {
+    key: 'submitCourse',
+    value: function submitCourse(e) {
       e.preventDefault();
-      var tweetContent = this.refs.newTweet.value;
+      var description = this.refs.description.value;
+      var courseCode = this.refs.courseCode.value;
+      var professor = this.refs.professor.value;
       // TODO: include a call to create a new tweet
-      this.props.createNewTweet(tweetContent);
+      this.props.createNewCourse(description, courseCode, professor);
     }
   }, {
     key: 'render',
@@ -29023,7 +28822,7 @@ var CreateTweetBox = function (_Component) {
         null,
         _react2.default.createElement(
           'form',
-          { onSubmit: this.submitTweet },
+          { onSubmit: this.submitCourse },
           _react2.default.createElement(
             'div',
             null,
@@ -29033,9 +28832,21 @@ var CreateTweetBox = function (_Component) {
               _react2.default.createElement(
                 'label',
                 null,
-                'Whats happening?'
+                'Course code'
               ),
-              _react2.default.createElement('textarea', { className: 'form-control', ref: 'newTweet' })
+              _react2.default.createElement('input', { type: 'text', className: 'form-control', ref: 'courseCode' }),
+              _react2.default.createElement(
+                'label',
+                null,
+                'Course description'
+              ),
+              _react2.default.createElement('textarea', { className: 'form-control', ref: 'description' }),
+              _react2.default.createElement(
+                'label',
+                null,
+                'Professor'
+              ),
+              _react2.default.createElement('input', { type: 'text', className: 'form-control', ref: 'professor' })
             ),
             _react2.default.createElement('input', {
               type: 'submit',
@@ -29052,13 +28863,13 @@ var CreateTweetBox = function (_Component) {
 
 var mapDispatchToProps = function mapDispatchToProps(dispatch) {
   return {
-    createNewTweet: function createNewTweet(tweet) {
-      return dispatch((0, _tweetActions.createNewTweet)(tweet));
+    createNewCourse: function createNewCourse(description, courseCode, professor) {
+      return dispatch((0, _tweetActions.createNewCourse)(description, courseCode, professor));
     }
   };
 };
-// supply the component with a property 'createNewTweet' that will dispatch
-// the createNewTweet action  with the new tweet's content
+// supply the component with a property 'createNewCourse' that will dispatch
+// the createNewCourse action  with the new tweet's content
 
 exports.default = (0, _reactRedux.connect)(null, mapDispatchToProps)(CreateTweetBox);
 
@@ -29079,8 +28890,6 @@ var _react = __webpack_require__(0);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _profileActions = __webpack_require__(30);
-
 var _reactRedux = __webpack_require__(4);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
@@ -29090,6 +28899,8 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+// import { updateProfile } from '../actions/profileActions';
+
 
 var EditProfile = function (_Component) {
   _inherits(EditProfile, _Component);
@@ -29190,9 +29001,19 @@ var EditProfile = function (_Component) {
 
 var mapDispatchToProps = function mapDispatchToProps(dispatch) {
   return {
-    updateProfile: function updateProfile(data) {
-      return dispatch((0, _profileActions.updateProfile)(data));
-    }
+    updateProfile: function (_updateProfile) {
+      function updateProfile(_x) {
+        return _updateProfile.apply(this, arguments);
+      }
+
+      updateProfile.toString = function () {
+        return _updateProfile.toString();
+      };
+
+      return updateProfile;
+    }(function (data) {
+      return dispatch(updateProfile(data));
+    })
   };
 };
 

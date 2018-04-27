@@ -22,16 +22,16 @@ const tweetReducer = (state = {}, action) => {
     case LOADTWEETS_FUL: {
       return action.tweets.reduce((accum, cur) => {
         let newObj = {};
-        newObj[cur.tweetId] = cur;
+        newObj[cur._id] = cur;
         return Object.assign(accum, newObj);
       }, {});
     }
     case CREATETWEET_FUL: {
-      newState[action.data.tweetId] = action.data;
+      newState[action.data._id] = action.data;
       return Object.assign(newState, state);
     }
     case FAVORITE_FUL: {
-      newState[action.data.tweetId] = action.data;
+      newState[action.data._id] = action.data;
       return Object.assign(newState, state);
     }
     default:

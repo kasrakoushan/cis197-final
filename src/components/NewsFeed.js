@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import TweetList from './TweetList';
 import DiscoverBirds from './DiscoverBirds';
 import { connect } from 'react-redux';
-import { loadTweets, getDiscoverBirds } from '../actions/tweetActions';
+import { loadCourses, getDiscoverBirds } from '../actions/tweetActions';
 
 class NewsFeed extends Component {
   constructor(props) {
@@ -15,8 +15,8 @@ class NewsFeed extends Component {
     // note that it needs a property getDisocverBirds that
     // is a function which dispatches the getDiscoverBirds action
     // also needs to mount TweetList with a property
-    // loadTweets that is a function which dispatches the
-    // loadTweets action.
+    // loadCourses that is a function which dispatches the
+    // loadCourses action.
     // ultimate html structure will look like
     // <div class="container">
     //  <h2>News Feed</h2>
@@ -34,11 +34,8 @@ class NewsFeed extends Component {
       <div className='container'>
         <h2>News Feed</h2>
         <div className='row'>
-          <div className='col-md-4'>
-            <DiscoverBirds getDiscoverBirds={this.props.getDiscoverBirds} />
-          </div>
           <div className='col-md-8'>
-            <TweetList loadTweets={this.props.loadTweets} />
+            <TweetList loadCourses={this.props.loadCourses} />
           </div>
         </div>
       </div>
@@ -49,7 +46,7 @@ class NewsFeed extends Component {
 
 // hint hint ;)
 const mapDispatchToProps = dispatch => ({
-  loadTweets: () => dispatch(loadTweets()),
+  loadCourses: () => dispatch(loadCourses()),
   getDiscoverBirds: () => dispatch(getDiscoverBirds()),
 });
 

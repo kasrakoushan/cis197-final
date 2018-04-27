@@ -12,8 +12,8 @@ export const CREATETWEET_REJ = 'CREATETWEET_REJ';
 export const DISCOVERBIRDS_FUL = 'DISCOVERBIRDS_FUL';
 export const DISCOVERBIRDS_REJ = 'DISCOVERBIRDS_REJ';
 
-// this is  a helper method you can use to getTweets from a given URL.
-function getTweets(url) {
+// this is  a helper method you can use to getCourses from a given URL.
+function getCourses(url) {
   return (dispatch) => {
     authenticatedRequest('GET', url)
       .then(res => res.json())
@@ -32,24 +32,10 @@ function getTweets(url) {
   };
 }
 
-
-export function loadTweetsForProfile(userId) {
-  // TODO: will send  a request to /api/profile/userId/tweets if a userId is specified
-  // else it will just send a request to /api/profile/tweets
-  // then should *get the Tweets*  (hint hint) from that url
-  // async action creator
-  if (userId) {
-    return getTweets(`/api/profile/${userId}/tweets`);
-  } else {
-    return getTweets('/api/profile/tweets');
-  }
-}
-
-
-export function loadTweets() {
+export function loadCourses() {
   // TODO: loads tweets from /api/newsfeed ie *get the tweets* from that url
   // async action creator
-  return getTweets('/api/newsfeed');
+  return getCourses('/api/course-catalog');
 }
 
 
@@ -79,20 +65,21 @@ export function favoriteTweet(tweetId) {
 }
 
 
-export function createNewTweet(tweetContent) {
+export function createNewCourse(courseCode, description, professor) {
   // TODO: authenticated request # 2
   // we send a POST request that is authenticated to /api/tweet
   // if the request is successful we send  a CREATETWEET_FUL action with message and some data
   // corresponding  to the new tweet (we get it from the response (determined by express))
   // if there is  an error, dispatch a CREATETWEET_REJ error
   return (dispatch) => {
-    authenticatedRequest('POST', '/api/tweet', {content: tweetContent})
+    authenticatedRequest('POST', '/api/course', 
+      {courseCode: courseCode, description: description, professor: professor})
       .then(res => res.json())
       .then((resp) => {
         const data = resp.data;
         dispatch({
           type: CREATETWEET_FUL,
-          message: 'You have created a tweet',
+          message: 'You have created a course',
           data,
         });
       })

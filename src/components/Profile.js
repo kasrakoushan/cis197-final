@@ -3,7 +3,7 @@ import TweetList from './TweetList';
 import ProfileBox from './ProfileBox';
 import CreateTweetBox from './CreateTweetBox';
 import { loadTweetsForProfile } from '../actions/tweetActions';
-import { getUser, favUnfav } from '../actions/profileActions';
+// import { getUser, favUnfav } from '../actions/profileActions';
 import { connect } from 'react-redux';
 
 class Profile extends Component {

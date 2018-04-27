@@ -28,6 +28,15 @@ module.exports = function (app) {
 
     // STUB
     Course.getCourseCatalog()
+      // .then((courses) => {
+      //   courses = courses.sort((a, b) => {
+      //     a = a.ratings.reduce((x, y) => x + y, 0);
+      //     b = b.ratings.reduce((x, y) => x + y, 0);
+      //     return b - a;
+      //   });
+      //   let pCourses = courses.map(t => t.getCourseInfo());
+      //   return Promise.all(pCourses);
+      // })
       .then((courses) => {
         res.json({ res: 'success', data: courses });
       })

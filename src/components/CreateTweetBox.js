@@ -1,31 +1,42 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { createNewTweet } from '../actions/tweetActions';
+import { createNewCourse } from '../actions/tweetActions';
 
 class CreateTweetBox extends Component {
   constructor(props) {
     super(props);
-    this.submitTweet = this.submitTweet.bind(this);
+    this.submitCourse = this.submitCourse.bind(this);
   }
 
-  submitTweet(e) {
+  submitCourse(e) {
     e.preventDefault();
-    let tweetContent = this.refs.newTweet.value;
+    let description = this.refs.description.value;
+    let courseCode = this.refs.courseCode.value;
+    let professor = this.refs.professor.value;
     // TODO: include a call to create a new tweet
-    this.props.createNewTweet(tweetContent);
+    this.props.createNewCourse(description,
+      courseCode, professor);
 
   }
 
   render() {
     return (
       <div>
-        <form onSubmit={this.submitTweet}>
+        <form onSubmit={this.submitCourse}>
           <div>
             <div className="form-group">
               <label>
-                Whats happening?
+                Course code
               </label>
-              <textarea className="form-control" ref="newTweet"></textarea>
+              <input type="text" className="form-control" ref="courseCode" />
+              <label>
+                Course description
+              </label>
+              <textarea className="form-control" ref="description"></textarea>
+              <label>
+                Professor
+              </label>
+              <input type="text" className="form-control" ref="professor" />
             </div>
             <input
               type="submit"
@@ -40,10 +51,11 @@ class CreateTweetBox extends Component {
 
 
 const mapDispatchToProps = dispatch => ({
-  createNewTweet: (tweet) => dispatch(createNewTweet(tweet))
+  createNewCourse: (description, courseCode, professor) => dispatch(
+    createNewCourse(description, courseCode, professor))
 });
-  // supply the component with a property 'createNewTweet' that will dispatch
-  // the createNewTweet action  with the new tweet's content
+  // supply the component with a property 'createNewCourse' that will dispatch
+  // the createNewCourse action  with the new tweet's content
 
 export default connect(
   null,

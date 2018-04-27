@@ -5,3 +5,5 @@ lib
 public/build/
 compiled/
 *.zip
+milestone-notes.md
+package-lock.json

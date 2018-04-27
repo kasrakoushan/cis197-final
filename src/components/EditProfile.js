@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { updateProfile } from '../actions/profileActions';
+// import { updateProfile } from '../actions/profileActions';
 import { connect } from 'react-redux';
 
 class EditProfile extends Component {

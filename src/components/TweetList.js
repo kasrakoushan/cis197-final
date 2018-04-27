@@ -9,7 +9,7 @@ class TweetList extends Component {
     // Think about how you'd be able to load tweets
     // without doing additional imports...
     this.setState({
-      load: setInterval(() => this.props.loadTweets(), 2500)
+      load: setInterval(() => this.props.loadCourses(), 2500)
     });
   }
 
@@ -28,6 +28,7 @@ class TweetList extends Component {
     // <div class="col-md-12">
     //  ...bunch o tweets
     // </div>
+    console.log(this.props.ids);
     let tweetComponents = this.props.ids.map((id) => {
       return (<Tweet tweetId={id} key={id} />);
     });
