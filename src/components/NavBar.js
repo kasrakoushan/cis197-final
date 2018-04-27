@@ -39,16 +39,6 @@ class NavBar extends Component {
                 </Link>
               </li>
               <li className="nav-item">
-                <Link className="nav-link" to="/edit-profile">
-                  Edit Profile
-                </Link>
-              </li>
-              <li className="nav-item">
-                <Link className="nav-link" to="/profile">
-                  My Profile
-                </Link>
-              </li>
-              <li className="nav-item">
                 <Link className="nav-link" to="/logout">
                   Logout
                 </Link>

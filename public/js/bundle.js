@@ -528,13 +528,13 @@ function getCourse(courseId) {
   };
 }
 
-function addComment(courseId) {
+function addComment(courseId, comment) {
   // authenticated request example
   // we send a POST request that is authenticated to /api/tweet/${tweetId}/favorite
   // if the request is successful we send  a FAVORITE_FUL action with message  and some  data
   // from the  response (determined by express)
   return function (dispatch) {
-    (0, _authenticatedRequest2.default)('POST', '/api/course/' + courseId + '/comment').then(function (res) {
+    (0, _authenticatedRequest2.default)('POST', '/api/course/' + courseId + '/comment', { comment: comment }).then(function (res) {
       return res.json();
     }).then(function (resp) {
       var data = resp.data;
@@ -28082,24 +28082,6 @@ var NavBar = function (_Component) {
             { className: 'nav-item' },
             _react2.default.createElement(
               _reactRouterDom.Link,
-              { className: 'nav-link', to: '/edit-profile' },
-              'Edit Profile'
-            )
-          ),
-          _react2.default.createElement(
-            'li',
-            { className: 'nav-item' },
-            _react2.default.createElement(
-              _reactRouterDom.Link,
-              { className: 'nav-link', to: '/profile' },
-              'My Profile'
-            )
-          ),
-          _react2.default.createElement(
-            'li',
-            { className: 'nav-item' },
-            _react2.default.createElement(
-              _reactRouterDom.Link,
               { className: 'nav-link', to: '/logout' },
               'Logout'
             )
@@ -28635,13 +28617,13 @@ var Profile = function (_Component) {
           { className: 'row' },
           _react2.default.createElement(
             'div',
-            { className: 'col-md-4' },
+            { className: 'col-md-12' },
             courseId && _react2.default.createElement(_ProfileBox2.default, { id: courseId,
               course: function course() {
                 return _this2.props.getCourse(courseId);
               },
-              addComment: function addComment() {
-                return _this2.props.addComment(courseId);
+              addComment: function addComment(comment) {
+                return _this2.props.addComment(courseId, comment);
               } })
           )
         )
@@ -28657,8 +28639,8 @@ var mapDispatchToProps = function mapDispatchToProps(dispatch) {
     getCourse: function getCourse(courseId) {
       return dispatch((0, _tweetActions.getCourse)(courseId));
     },
-    addComment: function addComment(courseId) {
-      return dispatch(favUnfav(courseId));
+    addComment: function addComment(courseId, comment) {
+      return dispatch((0, _tweetActions.addComment)(courseId));
     }
   };
 };
@@ -28706,13 +28688,24 @@ var ProfileBox = function (_Component) {
   function ProfileBox(props) {
     _classCallCheck(this, ProfileBox);
 
-    return _possibleConstructorReturn(this, (ProfileBox.__proto__ || Object.getPrototypeOf(ProfileBox)).call(this, props));
+    var _this = _possibleConstructorReturn(this, (ProfileBox.__proto__ || Object.getPrototypeOf(ProfileBox)).call(this, props));
+
+    _this.submitComment = _this.submitComment.bind(_this);
+    return _this;
   }
 
   _createClass(ProfileBox, [{
     key: 'componentDidMount',
     value: function componentDidMount() {
       this.props.course();
+    }
+  }, {
+    key: 'submitComment',
+    value: function submitComment(e) {
+      e.preventDefault();
+      var comment = this.refs.comment.value;
+      // TODO: include a call to create a new tweet
+      this.props.addComment(comment);
     }
   }, {
     key: 'render',
@@ -28735,26 +28728,57 @@ var ProfileBox = function (_Component) {
       // <br />
       return _react2.default.createElement(
         'div',
-        { className: 'card' },
+        null,
         _react2.default.createElement(
           'div',
-          { className: 'card-body' },
+          { className: 'col-md-4' },
           _react2.default.createElement(
             'div',
-            { className: 'card-title' },
-            this.props.courseState.courseCode
+            { className: 'card' },
+            _react2.default.createElement(
+              'div',
+              { className: 'card-body' },
+              _react2.default.createElement(
+                'div',
+                { className: 'card-title' },
+                this.props.courseState.courseCode
+              ),
+              _react2.default.createElement(
+                'p',
+                { className: 'text-muted' },
+                this.props.courseState.professor
+              ),
+              _react2.default.createElement(
+                'p',
+                { className: 'text-muted' },
+                this.props.courseState.description
+              )
+            )
           ),
           _react2.default.createElement(
-            'p',
-            { className: 'text-muted' },
-            this.props.courseState.professor
-          ),
-          _react2.default.createElement(
-            'p',
-            { className: 'text-muted' },
-            this.props.courseState.description
+            'form',
+            { onSubmit: this.submitComment },
+            _react2.default.createElement(
+              'div',
+              null,
+              _react2.default.createElement(
+                'div',
+                { className: 'form-group' },
+                _react2.default.createElement(
+                  'label',
+                  null,
+                  'Review this course:'
+                ),
+                _react2.default.createElement('input', { type: 'text', className: 'form-control', ref: 'comment' })
+              ),
+              _react2.default.createElement('input', {
+                type: 'submit',
+                className: 'btn btn-primary',
+                value: 'submit' })
+            )
           )
-        )
+        ),
+        _react2.default.createElement('div', { className: 'col-md-8' })
       );
     }
   }]);

@@ -44,11 +44,11 @@ class Profile extends Component {
       <div className='container'>
         <h2>Course Page</h2>
         <div className='row'>
-          <div className='col-md-4'>
+          <div className='col-md-12'>
             {courseId && 
               <ProfileBox id={courseId}
                 course={() => this.props.getCourse(courseId)}
-                addComment={() => this.props.addComment(courseId)} />}
+                addComment={(comment) => this.props.addComment(courseId, comment)} />}
           </div>
         </div>
       </div>
@@ -58,7 +58,7 @@ class Profile extends Component {
 
 const mapDispatchToProps = dispatch => ({
   getCourse: (courseId) => dispatch(getCourse(courseId)),
-  addComment: (courseId) => dispatch(favUnfav(courseId))
+  addComment: (courseId, comment) => dispatch(addComment(courseId))
 });
   // optionally use this to handle assigning dispatch actions to props
 

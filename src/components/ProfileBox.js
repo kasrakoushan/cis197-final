@@ -6,10 +6,19 @@ import { connect } from 'react-redux';
 class ProfileBox extends Component {
   constructor(props) {
     super(props);
+    this.submitComment = this.submitComment.bind(this);
   }
 
   componentDidMount() {
     this.props.course();
+  }
+
+  submitComment(e) {
+    e.preventDefault();
+    let comment = this.refs.comment.value;
+    // TODO: include a call to create a new tweet
+    this.props.addComment(comment);
+
   }
 
   render() {
@@ -30,17 +39,38 @@ class ProfileBox extends Component {
     // { button }
     // <br />
     return (
-      <div className="card">
-        <div className="card-body">
-          <div className="card-title">
-            { this.props.courseState.courseCode }
+      <div>
+        <div className='col-md-4'>
+          <div className="card">
+            <div className="card-body">
+              <div className="card-title">
+                { this.props.courseState.courseCode }
+              </div>
+              <p className="text-muted">
+                { this.props.courseState.professor }
+              </p>
+              <p className="text-muted">
+                { this.props.courseState.description }
+              </p>
+            </div>
           </div>
-          <p className="text-muted">
-            { this.props.courseState.professor }
-          </p>
-          <p className="text-muted">
-            { this.props.courseState.description }
-          </p>
+          <form onSubmit={this.submitComment}>
+            <div>
+              <div className="form-group">
+                <label>
+                  Review this course:
+                </label>
+                <input type="text" className="form-control" ref="comment" />
+              </div>
+              <input
+                type="submit"
+                className="btn btn-primary"
+                value="submit"/>
+            </div>
+          </form>
+        </div>
+        <div className='col-md-8'>
+
         </div>
       </div>
     );

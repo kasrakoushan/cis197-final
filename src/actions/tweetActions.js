@@ -60,13 +60,14 @@ export function getCourse(courseId) {
   };
 }
 
-export function addComment(courseId) {
+export function addComment(courseId, comment) {
   // authenticated request example
   // we send a POST request that is authenticated to /api/tweet/${tweetId}/favorite
   // if the request is successful we send  a FAVORITE_FUL action with message  and some  data
   // from the  response (determined by express)
   return (dispatch) => {
-    authenticatedRequest('POST', `/api/course/${courseId}/comment`)
+    authenticatedRequest('POST', `/api/course/${courseId}/comment`,
+      {comment: comment})
       .then(res => res.json())
       .then((resp) => {
         const data = resp.data;
