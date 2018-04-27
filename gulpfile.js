@@ -23,7 +23,7 @@ gulp.task('ms1-compile', function () {
 gulp.task('ms2-compile', function () {
   return gulp.src(ms2_compile, { base: '.' })
     .pipe(babel({
-      presets: ['es2015', 'react'],
+      presets: ['es2015', 'react', 'stage-0'],
     }))
     .pipe(gulp.dest('compiled'));
 });
