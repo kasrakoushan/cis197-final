@@ -20,7 +20,7 @@ const courseSchema = new Schema({
   professor: {
     type: String,
     required: true,
-  }
+  },
   comments: [{
     type: Schema.ObjectId,
     ref: 'Comment',
