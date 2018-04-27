@@ -1,6 +1,7 @@
 const router = require('express').Router();
 const isAuthenticated = require('../middlewares/isAuthenticated');
 // const Tweet = require('../models/tweet');
+const Course = require('../models/course');
 const User = require('../models/user');
 
 
@@ -10,7 +11,7 @@ module.exports = function (app) {
   router.use(isAuthenticated(app));
   // ENDSTUB
 
-  router.get('/newsfeed', function (req, res) {
+  router.get('/course-catalog', function (req, res) {
     // TODO: This route gives back all the tweets in the newsfeed for a given user.
     // 1. somehow get access to the current user's _id (HINT: Refer to middlewares/isAuthenticated
     // 2. Call the getNewsfeedTweets static method in Tweet with this current user _id.
@@ -26,38 +27,14 @@ module.exports = function (app) {
     //    { res: 'failure', data: errorinstancehere }
 
     // STUB
-    Tweet.getNewsfeedTweets(req.user._id)
-      .then((tweets) => {
-        tweets = tweets.sort((a, b) => {
-          a = a.created_at ? new Date(a.created_at) : new Date(0);
-          b = b.created_at ? new Date(b.created_at) : new Date(0);
-          return b - a;
-        });
-        let pTweets = tweets.map(t => t.getTweetInfo(req.user._id));
-        return Promise.all(pTweets);
-      })
-      .then((tweets) => {
-        res.json({ res: 'success', data: tweets });
+    Course.getCourseCatalog()
+      .then((courses) => {
+        res.json({ res: 'success', data: courses });
       })
       .catch((err) => {
         res.json({ res: 'failure', data: err });
       });
     // ENDSTUB
-  });
-
-  router.get('/newsfeed/discover-birds', function (req, res) {
-    User.find({}).then((users) => {
-      let result = [];
-      users.map((user) => {
-        if ((user._id.toString() !== req.user._id.toString()) && (user.followers.indexOf(req.user._id.toString()) === -1)) {
-          console.log(user._id.toString(), req.user._id);
-          result.push({ name: user.username, id: user._id });
-        }
-      });
-      res.json({ res: 'success', data: result });
-    }).catch((err) => {
-      res.json({ res: 'failure', data: err });
-    });
   });
 
   return router;

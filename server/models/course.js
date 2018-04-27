@@ -50,6 +50,20 @@ const courseSchema = new Schema({
 //   // ENDSTUB
 // };
 
+courseSchema.statics.getCourseCatalog = function () {
+  // Find one user with _id matching userId. If there is, iterate through
+  // the following array for the user and find all tweets made by that individual
+  // at the end, return a single array of tweet objects (all same level ie must be
+  // [t1, t2, t3 ... tn] but not [[t1], [t2,  t3] ... ].
+  // Return a Promise!
+  // STUB
+  return this.find()
+    .then((courses) => {
+      return courses;
+    });
+  // ENDSTUB
+};
+
 courseSchema.statics.createCourse = function (courseCode, description, professor) {
   // given the current  user id and some content of a new tweet, create a new  tweet object and
   // save  it. Then once it saves, return the  result of the tweet.getTweetInfo(currentUserId).

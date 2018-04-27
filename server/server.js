@@ -46,8 +46,6 @@ app.use('/account', accountRoutes(app));
 // mount routes so that you can access routes as domain.com/api/profile/edit etc
 // also pass in the app
 // STUB
-const profile = require('./api/profile');
-app.use('/api', profile(app));
 // ENDSTUB
 
 
@@ -55,8 +53,8 @@ app.use('/api', profile(app));
 // mount routes so that you can access routes as domain.com/api/tweet/
 // also pass in the app
 // STUB
-const tweet = require('./api/tweet');
-app.use('/api', tweet(app));
+const course = require('./api/course');
+app.use('/api', course(app));
 // ENDSTUB
 
 
@@ -67,6 +65,9 @@ app.use('/api', tweet(app));
 const newsfeed = require('./api/newsfeed');
 app.use('/api', newsfeed(app));
 // ENDSTUB
+
+const comment = require('./api/comment');
+app.use('/api', comment(app));
 
 
 // if we dont hit any api routes, then serve index.html from public
