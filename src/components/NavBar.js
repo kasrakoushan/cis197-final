@@ -29,7 +29,7 @@ class NavBar extends Component {
     // STUB
     return (
       <nav className="navbar navbar-expand-sm navbar-light bg-light">
-        <a className="navbar-brand" href="#">Twitter for BORDS</a>
+        <a className="navbar-brand" href="#">Penn Course Comments</a>
         { this.props.isAuthenticated ?
           (
             <ul className="navbar-nav">

@@ -41,13 +41,9 @@ class SignX extends Component {
     let username = this.refs.rusername.value;
     let password = this.refs.rpassword.value;
     let name = this.refs.name.value;
-    let species = this.refs.species.value;
-    let photo = this.refs.photo.value;
     dispatch(registerUser({
       username,
       password,
-      species,
-      photo,
       name,
     }));
   }
@@ -118,26 +114,6 @@ class SignX extends Component {
                   className="form-control"
                   type="text"
                   ref="name"
-                />
-              </div>
-              <div className="form-group">
-                <label>
-                  Species:
-                </label>
-                <input
-                  className="form-control"
-                  type="text"
-                  ref="species"
-                />
-              </div>
-              <div className="form-group">
-                <label>
-                  Image:
-                </label>
-                <input
-                  className="form-control"
-                  type="text"
-                  ref="photo"
                 />
               </div>
               <div className="form-group">
