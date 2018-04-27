@@ -50,6 +50,31 @@ const courseSchema = new Schema({
 //   // ENDSTUB
 // };
 
+courseSchema.statics.getCourse = function (courseId) {
+  // given an id and  a current user id (corresponding t o  the person looking at  the profile
+  // return an object with the following structure
+  //  {
+  //    name:  ...,
+  //    species: ...,
+  //    image: ...,
+  //    followers: ...,
+  //    following: ...,
+  //    isFollowing: true if currentUser is following user with _id == id, else false
+  //  }
+  //  If there is no user, throw a new  error 'No  such user with id'
+  //  returns a promise
+  //  STUB
+  return this.findOne({ _id: courseId })
+    .then((course) => {
+      if (course) {
+        return course;
+      } else {
+        throw new Error('No such user with id');
+      }
+    });
+  // ENDSTUB
+};
+
 courseSchema.statics.getCourseCatalog = function () {
   // Find one user with _id matching userId. If there is, iterate through
   // the following array for the user and find all tweets made by that individual

@@ -10,6 +10,25 @@ module.exports = function (app) {
   router.use(isAuthenticated(app));
   // ENDSTUB
 
+  router.get('/course/:id/info', function (req, res) {
+    // TODO: This route will grab the information for a given profile. If no id is given,
+    // look for the current user's profile. Use the getFormattedProfileById static method
+    // in User. If there aren't any errors, return json in the format as follows:
+    //  { res: 'success', data: profileInfoHere }
+    // If there is an error, return json in the format as follows
+    //  { res: 'failure', data: 'errorInstanceHere' }
+
+    // STUB
+    Course.getCourse(req.params.id)
+      .then((course) => {
+        res.json({ res: 'success', data: course });
+      })
+      .catch((err) => {
+        res.json({ res: 'failure', data: err });
+      });
+    // ENDSTUB
+  });
+
   router.post('/course/:id/favorite', function (req, res) {
     // This route will just call the favoriteTweet  static method in the
     // Tweet model. Pass in  the current user id and the :id from the route
