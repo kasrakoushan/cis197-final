@@ -12,6 +12,9 @@ export const CREATETWEET_REJ = 'CREATETWEET_REJ';
 export const DISCOVERBIRDS_FUL = 'DISCOVERBIRDS_FUL';
 export const DISCOVERBIRDS_REJ = 'DISCOVERBIRDS_REJ';
 
+export const COURSEPAGE_FUL = 'COURSEPAGE_FUL';
+export const COURSEPAGE_REJ = 'COURSEPAGE_REJ';
+
 // this is  a helper method you can use to getCourses from a given URL.
 function getCourses(url) {
   return (dispatch) => {
@@ -38,20 +41,38 @@ export function loadCourses() {
   return getCourses('/api/course-catalog');
 }
 
+export function getCourse(courseId) {
+  return (dispatch) => {
+    authenticatedRequest('GET', `/api/course/${courseId}/info`)
+      .then(res => res.json())
+      .then((resp) => {
+        dispatch({
+          type: COURSEPAGE_FUL,
+          course: resp.data,
+        });
+      })
+      .catch((error) => {
+        dispatch({
+          type: COURSEPAGE_REJ,
+          error,
+        });
+      });
+  };
+}
 
-export function favoriteTweet(tweetId) {
+export function addComment(courseId) {
   // authenticated request example
   // we send a POST request that is authenticated to /api/tweet/${tweetId}/favorite
   // if the request is successful we send  a FAVORITE_FUL action with message  and some  data
   // from the  response (determined by express)
   return (dispatch) => {
-    authenticatedRequest('POST', `/api/tweet/${tweetId}/favorite`)
+    authenticatedRequest('POST', `/api/course/${courseId}/comment`)
       .then(res => res.json())
       .then((resp) => {
         const data = resp.data;
         dispatch({
           type: FAVORITE_FUL,
-          message: 'You have favorited this tweet',
+          message: 'You have commented on this course',
           data,
         });
       })

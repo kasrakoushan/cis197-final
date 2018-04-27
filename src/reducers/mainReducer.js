@@ -5,6 +5,7 @@ import messageReducer from './messageReducer.js';
 import tweetReducer from './tweetReducer.js';
 import tweetListReducer from './tweetListReducer.js';
 import discoverReducer from './discoverReducer.js';
+import courseDetailReducer from './courseDetailReducer.js';
 // import profileReducer from './profileReducer.js';
 
 // TODO: you should somehow * combine reducers * hint hint
@@ -24,7 +25,8 @@ var tweetApp = combineReducers({
   messageReducer: messageReducer,
   tweetList: tweetListReducer,
   tweet: tweetReducer,
-  discoverReducer: discoverReducer
+  discoverReducer: discoverReducer,
+  courseDetailReducer: courseDetailReducer
 });
 
 export default tweetApp;

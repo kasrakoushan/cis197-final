@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import TweetList from './TweetList';
 import ProfileBox from './ProfileBox';
 import CreateTweetBox from './CreateTweetBox';
-import { loadTweetsForProfile } from '../actions/tweetActions';
+import { getCourse, addComment } from '../actions/tweetActions';
 // import { getUser, favUnfav } from '../actions/profileActions';
 import { connect } from 'react-redux';
 
@@ -38,23 +38,17 @@ class Profile extends Component {
     //  </div>
     // </div>
 
-    let curId = this.props.match.params.id;
+    let courseId = this.props.match.params.id;
 
     return (
       <div className='container'>
-        <h2>Profile</h2>
+        <h2>Course Page</h2>
         <div className='row'>
           <div className='col-md-4'>
-            {curId && 
-              <ProfileBox id={curId}
-                user={() => this.props.getUser(curId)}
-                favUnfav={() => this.props.favUnfav(curId)} />}
-          </div>
-          <div className='col-md-8'>
-            {!curId && <CreateTweetBox />}
-            {curId && 
-              <TweetList loadTweets={() => 
-                this.props.loadTweetsForProfile(curId)} />}
+            {courseId && 
+              <ProfileBox id={courseId}
+                course={() => this.props.getCourse(courseId)}
+                addComment={() => this.props.addComment(courseId)} />}
           </div>
         </div>
       </div>
@@ -63,9 +57,8 @@ class Profile extends Component {
 }
 
 const mapDispatchToProps = dispatch => ({
-  loadTweetsForProfile: (userId) => dispatch(loadTweetsForProfile(userId)),
-  getUser: (userId) => dispatch(getUser(userId)),
-  favUnfav: (userId) => dispatch(favUnfav(userId))
+  getCourse: (courseId) => dispatch(getCourse(courseId)),
+  addComment: (courseId) => dispatch(favUnfav(courseId))
 });
   // optionally use this to handle assigning dispatch actions to props
 

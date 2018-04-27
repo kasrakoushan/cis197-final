@@ -457,9 +457,10 @@ module.exports = invariant;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.DISCOVERBIRDS_REJ = exports.DISCOVERBIRDS_FUL = exports.CREATETWEET_REJ = exports.CREATETWEET_FUL = exports.LOADTWEETS_FUL = exports.LOADTWEETS_REJ = exports.FAVORITE_FUL = exports.FAVORITE_REJ = undefined;
+exports.COURSEPAGE_REJ = exports.COURSEPAGE_FUL = exports.DISCOVERBIRDS_REJ = exports.DISCOVERBIRDS_FUL = exports.CREATETWEET_REJ = exports.CREATETWEET_FUL = exports.LOADTWEETS_FUL = exports.LOADTWEETS_REJ = exports.FAVORITE_FUL = exports.FAVORITE_REJ = undefined;
 exports.loadCourses = loadCourses;
-exports.favoriteTweet = favoriteTweet;
+exports.getCourse = getCourse;
+exports.addComment = addComment;
 exports.createNewCourse = createNewCourse;
 exports.getDiscoverBirds = getDiscoverBirds;
 
@@ -480,6 +481,9 @@ var CREATETWEET_REJ = exports.CREATETWEET_REJ = 'CREATETWEET_REJ';
 
 var DISCOVERBIRDS_FUL = exports.DISCOVERBIRDS_FUL = 'DISCOVERBIRDS_FUL';
 var DISCOVERBIRDS_REJ = exports.DISCOVERBIRDS_REJ = 'DISCOVERBIRDS_REJ';
+
+var COURSEPAGE_FUL = exports.COURSEPAGE_FUL = 'COURSEPAGE_FUL';
+var COURSEPAGE_REJ = exports.COURSEPAGE_REJ = 'COURSEPAGE_REJ';
 
 // this is  a helper method you can use to getCourses from a given URL.
 function getCourses(url) {
@@ -506,19 +510,37 @@ function loadCourses() {
   return getCourses('/api/course-catalog');
 }
 
-function favoriteTweet(tweetId) {
+function getCourse(courseId) {
+  return function (dispatch) {
+    (0, _authenticatedRequest2.default)('GET', '/api/course/' + courseId + '/info').then(function (res) {
+      return res.json();
+    }).then(function (resp) {
+      dispatch({
+        type: COURSEPAGE_FUL,
+        course: resp.data
+      });
+    }).catch(function (error) {
+      dispatch({
+        type: COURSEPAGE_REJ,
+        error: error
+      });
+    });
+  };
+}
+
+function addComment(courseId) {
   // authenticated request example
   // we send a POST request that is authenticated to /api/tweet/${tweetId}/favorite
   // if the request is successful we send  a FAVORITE_FUL action with message  and some  data
   // from the  response (determined by express)
   return function (dispatch) {
-    (0, _authenticatedRequest2.default)('POST', '/api/tweet/' + tweetId + '/favorite').then(function (res) {
+    (0, _authenticatedRequest2.default)('POST', '/api/course/' + courseId + '/comment').then(function (res) {
       return res.json();
     }).then(function (resp) {
       var data = resp.data;
       dispatch({
         type: FAVORITE_FUL,
-        message: 'You have favorited this tweet',
+        message: 'You have commented on this course',
         data: data
       });
     }).catch(function (error) {
@@ -27144,6 +27166,10 @@ var _discoverReducer = __webpack_require__(120);
 
 var _discoverReducer2 = _interopRequireDefault(_discoverReducer);
 
+var _courseDetailReducer = __webpack_require__(137);
+
+var _courseDetailReducer2 = _interopRequireDefault(_courseDetailReducer);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 // import profileReducer from './profileReducer.js';
@@ -27160,14 +27186,16 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 // }
 // store this reducer in a variable 'tweetApp'
 
+// TODO: determine appropriate imports
 var tweetApp = (0, _redux.combineReducers)({
   authReducer: _authReducer2.default,
   messageReducer: _messageReducer2.default,
   tweetList: _tweetListReducer2.default,
   tweet: _tweetReducer2.default,
-  discoverReducer: _discoverReducer2.default
+  discoverReducer: _discoverReducer2.default,
+  courseDetailReducer: _courseDetailReducer2.default
 });
-// TODO: determine appropriate imports
+
 exports.default = tweetApp;
 
 /***/ }),
@@ -27557,7 +27585,7 @@ var App = function (_Component) {
             _react2.default.createElement(_reactRouterDom.Route, { path: '/logout', component: (0, _AuthHOC2.default)(_Logout2.default) }),
             _react2.default.createElement(_reactRouterDom.Route, { path: '/feed', component: (0, _AuthHOC2.default)(_NewsFeed2.default) }),
             _react2.default.createElement(_reactRouterDom.Route, { path: '/new-course', component: (0, _AuthHOC2.default)(_CreateTweetBox2.default) }),
-            _react2.default.createElement(_reactRouterDom.Route, { path: '/profile/:id?', component: (0, _AuthHOC2.default)(_Profile2.default) }),
+            _react2.default.createElement(_reactRouterDom.Route, { path: '/course/:id/info', component: (0, _AuthHOC2.default)(_Profile2.default) }),
             _react2.default.createElement(_reactRouterDom.Route, { path: '/edit-profile', component: (0, _AuthHOC2.default)(_EditProfile2.default) }),
             _react2.default.createElement(_reactRouterDom.Route, { component: _SignX2.default })
           )
@@ -28360,6 +28388,7 @@ var Tweet = function (_Component) {
     key: 'render',
     value: function render() {
       var _props = this.props,
+          _id = _props._id,
           courseCode = _props.courseCode,
           description = _props.description,
           professor = _props.professor;
@@ -28372,7 +28401,7 @@ var Tweet = function (_Component) {
         color: '#FFF'
       };
       // let authorUrl = `/profile/${authorId}`;
-      var courseUrl = '/feed';
+      var courseUrl = '/course/' + _id + '/info';
       return _react2.default.createElement(
         'div',
         { className: 'card', style: cardStyles },
@@ -28591,7 +28620,7 @@ var Profile = function (_Component) {
       //  </div>
       // </div>
 
-      var curId = this.props.match.params.id;
+      var courseId = this.props.match.params.id;
 
       return _react2.default.createElement(
         'div',
@@ -28599,7 +28628,7 @@ var Profile = function (_Component) {
         _react2.default.createElement(
           'h2',
           null,
-          'Profile'
+          'Course Page'
         ),
         _react2.default.createElement(
           'div',
@@ -28607,20 +28636,12 @@ var Profile = function (_Component) {
           _react2.default.createElement(
             'div',
             { className: 'col-md-4' },
-            curId && _react2.default.createElement(_ProfileBox2.default, { id: curId,
-              user: function user() {
-                return _this2.props.getUser(curId);
+            courseId && _react2.default.createElement(_ProfileBox2.default, { id: courseId,
+              course: function course() {
+                return _this2.props.getCourse(courseId);
               },
-              favUnfav: function favUnfav() {
-                return _this2.props.favUnfav(curId);
-              } })
-          ),
-          _react2.default.createElement(
-            'div',
-            { className: 'col-md-8' },
-            !curId && _react2.default.createElement(_CreateTweetBox2.default, null),
-            curId && _react2.default.createElement(_TweetList2.default, { loadTweets: function loadTweets() {
-                return _this2.props.loadTweetsForProfile(curId);
+              addComment: function addComment() {
+                return _this2.props.addComment(courseId);
               } })
           )
         )
@@ -28633,35 +28654,12 @@ var Profile = function (_Component) {
 
 var mapDispatchToProps = function mapDispatchToProps(dispatch) {
   return {
-    loadTweetsForProfile: function loadTweetsForProfile(userId) {
-      return dispatch((0, _tweetActions.loadTweetsForProfile)(userId));
+    getCourse: function getCourse(courseId) {
+      return dispatch((0, _tweetActions.getCourse)(courseId));
     },
-    getUser: function (_getUser) {
-      function getUser(_x) {
-        return _getUser.apply(this, arguments);
-      }
-
-      getUser.toString = function () {
-        return _getUser.toString();
-      };
-
-      return getUser;
-    }(function (userId) {
-      return dispatch(getUser(userId));
-    }),
-    favUnfav: function (_favUnfav) {
-      function favUnfav(_x2) {
-        return _favUnfav.apply(this, arguments);
-      }
-
-      favUnfav.toString = function () {
-        return _favUnfav.toString();
-      };
-
-      return favUnfav;
-    }(function (userId) {
-      return dispatch(favUnfav(userId));
-    })
+    addComment: function addComment(courseId) {
+      return dispatch(favUnfav(courseId));
+    }
   };
 };
 // optionally use this to handle assigning dispatch actions to props
@@ -28714,44 +28712,48 @@ var ProfileBox = function (_Component) {
   _createClass(ProfileBox, [{
     key: 'componentDidMount',
     value: function componentDidMount() {
-      this.props.user();
+      this.props.course();
     }
   }, {
     key: 'render',
     value: function render() {
-      var button = this.props.id ? _react2.default.createElement(
-        'button',
-        { className: 'btn btn-primary', onClick: this.props.favUnfav },
-        this.props.profile.isFollowing === true ? 'Unfollow' : 'Follow'
-      ) : '';
-      var followersLength = this.props.profile.followers ? this.props.profile.followers.length : 0;
-      var followingLength = this.props.profile.following ? this.props.profile.following.length : 0;
+      // let button = this.props.id ?
+      //   (
+      //     <button className="btn btn-primary" onClick={this.props.favUnfav}>
+      //       { this.props.profile.isFollowing === true ? 'Unfollow' : 'Follow' }
+      //     </button>
+      //   ) : '';
+      // let followersLength = this.props.profile.followers ? this.props.profile.followers.length : 0;
+      // let followingLength = this.props.profile.following ? this.props.profile.following.length : 0;
+      // BUTTON BLOCK
+      // <br /> Followers:
+      // { followersLength }
+      // <br /> Following:
+      // { followingLength }
+      // <br />
+      // { button }
+      // <br />
       return _react2.default.createElement(
         'div',
         { className: 'card' },
-        _react2.default.createElement('img', { className: 'card-img-top', src: this.props.profile.image, style: { height: '200px' } }),
         _react2.default.createElement(
           'div',
           { className: 'card-body' },
           _react2.default.createElement(
             'div',
             { className: 'card-title' },
-            this.props.profile.name
+            this.props.courseState.courseCode
           ),
           _react2.default.createElement(
             'p',
             { className: 'text-muted' },
-            this.props.profile.species
+            this.props.courseState.professor
           ),
-          _react2.default.createElement('br', null),
-          ' Followers:',
-          followersLength,
-          _react2.default.createElement('br', null),
-          ' Following:',
-          followingLength,
-          _react2.default.createElement('br', null),
-          button,
-          _react2.default.createElement('br', null)
+          _react2.default.createElement(
+            'p',
+            { className: 'text-muted' },
+            this.props.courseState.description
+          )
         )
       );
     }
@@ -28762,7 +28764,7 @@ var ProfileBox = function (_Component) {
 
 var mapStateToProps = function mapStateToProps(state) {
   return {
-    profile: state.profileReducer.profile
+    courseState: state.courseDetailReducer.course
   };
 };
 
@@ -29027,6 +29029,52 @@ var mapDispatchToProps = function mapDispatchToProps(dispatch) {
 // pattern for dispatching updateProfile
 
 exports.default = (0, _reactRedux.connect)(null, mapDispatchToProps)(EditProfile);
+
+/***/ }),
+/* 137 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; // providing this for  you bc im nice  :)
+
+
+var _tweetActions = __webpack_require__(6);
+
+var initialState = {
+  course: {
+    courseCode: '',
+    professor: '',
+    description: '',
+    comments: [],
+    ratings: []
+  }
+};
+
+var courseDetailReducer = function courseDetailReducer() {
+  var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : initialState;
+  var action = arguments[1];
+
+  switch (action.type) {
+    case _tweetActions.COURSEPAGE_FUL:
+      return _extends({}, state, {
+        course: Object.assign({}, state.course, action.course)
+      });
+    case _tweetActions.FAVORITE_FUL:
+      return _extends({}, state, {
+        course: action.data
+      });
+    default:
+      return state;
+  }
+};
+
+exports.default = courseDetailReducer;
 
 /***/ })
 /******/ ]);

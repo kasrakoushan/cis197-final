@@ -9,7 +9,7 @@ class Tweet extends Component {
   }
 
   render() {
-    let { courseCode, description, professor } = this.props;
+    let { _id, courseCode, description, professor } = this.props;
     let cardStyles = {
       marginBottom: '40px',
       padding: '10px',
@@ -18,7 +18,7 @@ class Tweet extends Component {
       color: '#FFF',
     };
     // let authorUrl = `/profile/${authorId}`;
-    let courseUrl = '/feed';
+    let courseUrl = `/course/${_id}/info`;
     return (
       <div className="card" style={cardStyles}>
         <h5 className="card-title">

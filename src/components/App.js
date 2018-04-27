@@ -50,7 +50,7 @@ class App extends Component {
             <Route path='/logout' component={AuthHOC(Logout)} />
             <Route path='/feed' component={AuthHOC(NewsFeed)} />
             <Route path='/new-course' component={AuthHOC(CreateTweetBox)} />
-            <Route path='/profile/:id?' component={AuthHOC(Profile)} />
+            <Route path='/course/:id/info' component={AuthHOC(Profile)} />
             <Route path='/edit-profile' component={AuthHOC(EditProfile)} />
             <Route component={SignX} />
           </Switch>

@@ -9,35 +9,38 @@ class ProfileBox extends Component {
   }
 
   componentDidMount() {
-    this.props.user();
+    this.props.course();
   }
 
   render() {
-    let button = this.props.id ?
-      (
-        <button className="btn btn-primary" onClick={this.props.favUnfav}>
-          { this.props.profile.isFollowing === true ? 'Unfollow' : 'Follow' }
-        </button>
-      ) : '';
-    let followersLength = this.props.profile.followers ? this.props.profile.followers.length : 0;
-    let followingLength = this.props.profile.following ? this.props.profile.following.length : 0;
+    // let button = this.props.id ?
+    //   (
+    //     <button className="btn btn-primary" onClick={this.props.favUnfav}>
+    //       { this.props.profile.isFollowing === true ? 'Unfollow' : 'Follow' }
+    //     </button>
+    //   ) : '';
+    // let followersLength = this.props.profile.followers ? this.props.profile.followers.length : 0;
+    // let followingLength = this.props.profile.following ? this.props.profile.following.length : 0;
+    // BUTTON BLOCK
+    // <br /> Followers:
+    // { followersLength }
+    // <br /> Following:
+    // { followingLength }
+    // <br />
+    // { button }
+    // <br />
     return (
       <div className="card">
-        <img className="card-img-top" src={this.props.profile.image} style={{ height: '200px' }} />
         <div className="card-body">
           <div className="card-title">
-            { this.props.profile.name }
+            { this.props.courseState.courseCode }
           </div>
           <p className="text-muted">
-            { this.props.profile.species }
+            { this.props.courseState.professor }
           </p>
-          <br /> Followers:
-          { followersLength }
-          <br /> Following:
-          { followingLength }
-          <br />
-          { button }
-          <br />
+          <p className="text-muted">
+            { this.props.courseState.description }
+          </p>
         </div>
       </div>
     );
@@ -45,7 +48,7 @@ class ProfileBox extends Component {
 }
 
 const mapStateToProps = state => ({
-  profile: state.profileReducer.profile,
+  courseState: state.courseDetailReducer.course,
 });
 
 export default connect(mapStateToProps, null)(ProfileBox);
