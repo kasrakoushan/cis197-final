@@ -14,8 +14,8 @@ class CreateTweetBox extends Component {
     let courseCode = this.refs.courseCode.value;
     let professor = this.refs.professor.value;
     // TODO: include a call to create a new tweet
-    this.props.createNewCourse(description,
-      courseCode, professor);
+    this.props.createNewCourse(
+      courseCode, description, professor);
 
   }
 

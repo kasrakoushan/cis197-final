@@ -24,6 +24,7 @@ class Tweet extends Component {
         <h5 className="card-title">
           <Link to={courseUrl}> { courseCode } </Link>
         </h5>
+        <h6> { professor } </h6>
         <p>
           { description }
         </p>

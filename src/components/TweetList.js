@@ -28,7 +28,6 @@ class TweetList extends Component {
     // <div class="col-md-12">
     //  ...bunch o tweets
     // </div>
-    console.log(this.props.ids);
     let tweetComponents = this.props.ids.map((id) => {
       return (<Tweet tweetId={id} key={id} />);
     });

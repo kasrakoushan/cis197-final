@@ -32,7 +32,7 @@ class NewsFeed extends Component {
 
     return (
       <div className='container'>
-        <h2>News Feed</h2>
+        <h2>Course Catalog</h2>
         <div className='row'>
           <div className='col-md-8'>
             <TweetList loadCourses={this.props.loadCourses} />

@@ -2204,7 +2204,6 @@ var TweetList = function (_Component) {
       // <div class="col-md-12">
       //  ...bunch o tweets
       // </div>
-      console.log(this.props.ids);
       var tweetComponents = this.props.ids.map(function (id) {
         return _react2.default.createElement(_Tweet2.default, { tweetId: id, key: id });
       });
@@ -27360,7 +27359,6 @@ var tweetListReducer = function tweetListReducer() {
 
   switch (action.type) {
     case _tweetActions.LOADTWEETS_FUL:
-      console.log(action.tweets);
       return {
         ids: action.tweets.map(function (t) {
           return t._id;
@@ -28284,7 +28282,7 @@ var NewsFeed = function (_Component) {
         _react2.default.createElement(
           'h2',
           null,
-          'News Feed'
+          'Course Catalog'
         ),
         _react2.default.createElement(
           'div',
@@ -28388,6 +28386,13 @@ var Tweet = function (_Component) {
             courseCode,
             ' '
           )
+        ),
+        _react2.default.createElement(
+          'h6',
+          null,
+          ' ',
+          professor,
+          ' '
         ),
         _react2.default.createElement(
           'p',
@@ -28812,7 +28817,7 @@ var CreateTweetBox = function (_Component) {
       var courseCode = this.refs.courseCode.value;
       var professor = this.refs.professor.value;
       // TODO: include a call to create a new tweet
-      this.props.createNewCourse(description, courseCode, professor);
+      this.props.createNewCourse(courseCode, description, professor);
     }
   }, {
     key: 'render',
