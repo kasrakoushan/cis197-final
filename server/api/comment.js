@@ -28,6 +28,15 @@ module.exports = function (app) {
       });
   });
 
+  router.get('/comments/all', function (req, res) {
+    Comment.getComments(req.body.comments)
+      .then((comments) => {
+        res.json({ res: 'success', data: comments });
+      })
+      .catch((err) => {
+        res.json({ res: 'failure', data: err });
+      });
+  });
 
   return router;
 };

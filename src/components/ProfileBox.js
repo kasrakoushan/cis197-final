@@ -11,6 +11,11 @@ class ProfileBox extends Component {
 
   componentDidMount() {
     this.props.course();
+
+    this.setState({
+      load: setInterval(() => 
+        this.props.getComments(this.props.courseState.comments), 2500)
+    });
   }
 
   submitComment(e) {
@@ -21,23 +26,16 @@ class ProfileBox extends Component {
 
   }
 
+  componentWillUnmount() {
+    // TODO: when the component is about to unmount
+    // clear the interval (the one running every 2500 ms
+    // ie stop  the refreshing)
+    clearInterval(this.state.load);
+  }
+
   render() {
-    // let button = this.props.id ?
-    //   (
-    //     <button className="btn btn-primary" onClick={this.props.favUnfav}>
-    //       { this.props.profile.isFollowing === true ? 'Unfollow' : 'Follow' }
-    //     </button>
-    //   ) : '';
-    // let followersLength = this.props.profile.followers ? this.props.profile.followers.length : 0;
-    // let followingLength = this.props.profile.following ? this.props.profile.following.length : 0;
-    // BUTTON BLOCK
-    // <br /> Followers:
-    // { followersLength }
-    // <br /> Following:
-    // { followingLength }
-    // <br />
-    // { button }
-    // <br />
+    let comments = this.props.courseState.commentContents;
+    console.log(comments);
     return (
       <div>
         <div className='col-md-4'>

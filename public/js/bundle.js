@@ -457,7 +457,8 @@ module.exports = invariant;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.COURSEPAGE_REJ = exports.COURSEPAGE_FUL = exports.DISCOVERBIRDS_REJ = exports.DISCOVERBIRDS_FUL = exports.CREATETWEET_REJ = exports.CREATETWEET_FUL = exports.LOADTWEETS_FUL = exports.LOADTWEETS_REJ = exports.FAVORITE_FUL = exports.FAVORITE_REJ = undefined;
+exports.LOADCOMMENTS_REJ = exports.LOADCOMMENTS_FUL = exports.COURSEPAGE_REJ = exports.COURSEPAGE_FUL = exports.DISCOVERBIRDS_REJ = exports.DISCOVERBIRDS_FUL = exports.CREATETWEET_REJ = exports.CREATETWEET_FUL = exports.LOADTWEETS_FUL = exports.LOADTWEETS_REJ = exports.FAVORITE_FUL = exports.FAVORITE_REJ = undefined;
+exports.getComments = getComments;
 exports.loadCourses = loadCourses;
 exports.getCourse = getCourse;
 exports.addComment = addComment;
@@ -485,6 +486,9 @@ var DISCOVERBIRDS_REJ = exports.DISCOVERBIRDS_REJ = 'DISCOVERBIRDS_REJ';
 var COURSEPAGE_FUL = exports.COURSEPAGE_FUL = 'COURSEPAGE_FUL';
 var COURSEPAGE_REJ = exports.COURSEPAGE_REJ = 'COURSEPAGE_REJ';
 
+var LOADCOMMENTS_FUL = exports.LOADCOMMENTS_FUL = 'LOADCOMMENTS_FUL';
+var LOADCOMMENTS_REJ = exports.LOADCOMMENTS_REJ = 'LOADCOMMENTS_REJ';
+
 // this is  a helper method you can use to getCourses from a given URL.
 function getCourses(url) {
   return function (dispatch) {
@@ -498,6 +502,25 @@ function getCourses(url) {
     }).catch(function (error) {
       dispatch({
         type: LOADTWEETS_REJ,
+        error: error
+      });
+    });
+  };
+}
+
+function getComments(commentIds) {
+  return function (dispatch) {
+    (0, _authenticatedRequest2.default)('GET', '/api/comments/all', { comments: commentIds }).then(function (res) {
+      console.log(res);
+      return res.json();
+    }).then(function (resp) {
+      dispatch({
+        type: LOADCOMMENTS_FUL,
+        comments: resp.data
+      });
+    }).catch(function (error) {
+      dispatch({
+        type: LOADCOMMENTS_REJ,
         error: error
       });
     });
@@ -28624,6 +28647,9 @@ var Profile = function (_Component) {
               },
               addComment: function addComment(comment) {
                 return _this2.props.addComment(courseId, comment);
+              },
+              getComments: function getComments(commentIds) {
+                return _this2.props.getComments(commentIds);
               } })
           )
         )
@@ -28641,6 +28667,9 @@ var mapDispatchToProps = function mapDispatchToProps(dispatch) {
     },
     addComment: function addComment(courseId, comment) {
       return dispatch((0, _tweetActions.addComment)(courseId));
+    },
+    getComments: function getComments(commentIds) {
+      return dispatch((0, _tweetActions.getComments)(commentIds));
     }
   };
 };
@@ -28697,7 +28726,15 @@ var ProfileBox = function (_Component) {
   _createClass(ProfileBox, [{
     key: 'componentDidMount',
     value: function componentDidMount() {
+      var _this2 = this;
+
       this.props.course();
+
+      this.setState({
+        load: setInterval(function () {
+          return _this2.props.getComments(_this2.props.courseState.comments);
+        }, 2500)
+      });
     }
   }, {
     key: 'submitComment',
@@ -28708,24 +28745,18 @@ var ProfileBox = function (_Component) {
       this.props.addComment(comment);
     }
   }, {
+    key: 'componentWillUnmount',
+    value: function componentWillUnmount() {
+      // TODO: when the component is about to unmount
+      // clear the interval (the one running every 2500 ms
+      // ie stop  the refreshing)
+      clearInterval(this.state.load);
+    }
+  }, {
     key: 'render',
     value: function render() {
-      // let button = this.props.id ?
-      //   (
-      //     <button className="btn btn-primary" onClick={this.props.favUnfav}>
-      //       { this.props.profile.isFollowing === true ? 'Unfollow' : 'Follow' }
-      //     </button>
-      //   ) : '';
-      // let followersLength = this.props.profile.followers ? this.props.profile.followers.length : 0;
-      // let followingLength = this.props.profile.following ? this.props.profile.following.length : 0;
-      // BUTTON BLOCK
-      // <br /> Followers:
-      // { followersLength }
-      // <br /> Following:
-      // { followingLength }
-      // <br />
-      // { button }
-      // <br />
+      var comments = this.props.courseState.commentContents;
+      console.log(comments);
       return _react2.default.createElement(
         'div',
         null,
@@ -29076,7 +29107,8 @@ var initialState = {
     professor: '',
     description: '',
     comments: [],
-    ratings: []
+    ratings: [],
+    commentContents: []
   }
 };
 
@@ -29091,7 +29123,11 @@ var courseDetailReducer = function courseDetailReducer() {
       });
     case _tweetActions.FAVORITE_FUL:
       return _extends({}, state, {
-        course: action.data
+        course: Object.assign({}, state.course, action.data)
+      });
+    case _tweetActions.LOADCOMMENTS_FUL:
+      return _extends({}, state, {
+        course: Object.assign({}, state.course, { commentContents: action.comments })
       });
     default:
       return state;

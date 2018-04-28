@@ -2,6 +2,7 @@
 import {
   COURSEPAGE_FUL,
   FAVORITE_FUL,
+  LOADCOMMENTS_FUL,
 } from '../actions/tweetActions';
 
 let initialState = {
@@ -10,7 +11,8 @@ let initialState = {
     professor: '',
     description: '',
     comments: [],
-    ratings: []
+    ratings: [],
+    commentContents: []
   },
 };
 
@@ -24,8 +26,14 @@ const courseDetailReducer = (state = initialState, action) => {
   case FAVORITE_FUL:
     return {
       ...state,
-      course: action.data,
+      course: Object.assign({}, state.course, action.data),
     };
+  case LOADCOMMENTS_FUL:
+    return {
+      ...state,
+      course: Object.assign({}, state.course,
+        {commentContents: action.comments}),
+    }
   default:
     return state;
   }

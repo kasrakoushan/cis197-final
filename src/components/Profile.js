@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import TweetList from './TweetList';
 import ProfileBox from './ProfileBox';
 import CreateTweetBox from './CreateTweetBox';
-import { getCourse, addComment } from '../actions/tweetActions';
+import { getCourse, addComment, getComments } from '../actions/tweetActions';
 // import { getUser, favUnfav } from '../actions/profileActions';
 import { connect } from 'react-redux';
 
@@ -48,7 +48,8 @@ class Profile extends Component {
             {courseId && 
               <ProfileBox id={courseId}
                 course={() => this.props.getCourse(courseId)}
-                addComment={(comment) => this.props.addComment(courseId, comment)} />}
+                addComment={(comment) => this.props.addComment(courseId, comment)} 
+                getComments={(commentIds) => this.props.getComments(commentIds)} />}
           </div>
         </div>
       </div>
@@ -58,7 +59,8 @@ class Profile extends Component {
 
 const mapDispatchToProps = dispatch => ({
   getCourse: (courseId) => dispatch(getCourse(courseId)),
-  addComment: (courseId, comment) => dispatch(addComment(courseId))
+  addComment: (courseId, comment) => dispatch(addComment(courseId)),
+  getComments: (commentIds) => dispatch(getComments(commentIds))
 });
   // optionally use this to handle assigning dispatch actions to props
 

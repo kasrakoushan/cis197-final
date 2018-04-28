@@ -22,6 +22,13 @@ let commentSchema = new Schema({
 });
 
 
+commentSchema.statics.getComments = function(commentIds) {
+  return this.find({ _id: { $in: commentIds }})
+    .then((comments) =>
+      return comments.map(c => c.content));
+    );
+}
+
 commentSchema.statics.addComment = function (courseId, content) {
   // TODO: create a new user object with username, password, species, image, and name equal to  the
   // specified arguments. Once  this object is created, use bcrypt.hash to hash the

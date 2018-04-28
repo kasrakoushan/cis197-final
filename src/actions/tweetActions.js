@@ -15,6 +15,9 @@ export const DISCOVERBIRDS_REJ = 'DISCOVERBIRDS_REJ';
 export const COURSEPAGE_FUL = 'COURSEPAGE_FUL';
 export const COURSEPAGE_REJ = 'COURSEPAGE_REJ';
 
+export const LOADCOMMENTS_FUL = 'LOADCOMMENTS_FUL';
+export const LOADCOMMENTS_REJ = 'LOADCOMMENTS_REJ';
+
 // this is  a helper method you can use to getCourses from a given URL.
 function getCourses(url) {
   return (dispatch) => {
@@ -29,6 +32,29 @@ function getCourses(url) {
       .catch((error) => {
         dispatch({
           type: LOADTWEETS_REJ,
+          error,
+        });
+      });
+  };
+}
+
+export function getComments(commentIds) {
+  return (dispatch) => {
+    authenticatedRequest('GET', '/api/comments/all',
+      {comments: commentIds})
+      .then(res => {
+        console.log(res);
+        return res.json();
+      })
+      .then((resp) => {
+        dispatch({
+          type: LOADCOMMENTS_FUL,
+          comments: resp.data,
+        });
+      })
+      .catch((error) => {
+        dispatch({
+          type: LOADCOMMENTS_REJ,
           error,
         });
       });
